@@ -7,7 +7,9 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "songs")
@@ -20,7 +22,7 @@ public class Song {
     private Long id;
 
     @NotEmpty
-    private String name;
+    private String title;
 
     private String description;
 
@@ -42,23 +44,54 @@ public class Song {
     @NotEmpty
     private String lyrics;
 
+    @ManyToOne
+    @JoinColumn(name = "album_id")
+    private Album album;
+
 //    @OneToMany()
 //    private List<Annotation> annotations;
 
-//    @ManyToMany()
-//    private List<Tag> tags;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "song_tag",
+            joinColumns = @JoinColumn(name = "song_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags;
 
 //    @NotEmpty
 //    @ManyToMany()
-//    private List<User> authors;
+//    private User author;
 
 //    @ManyToMany()
 //    private List<User> features;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    private Album album;
-
 //    @ManyToMany()
 //    private List<User> producers;
 
+    public Song(String title, String description, Long views, Date releaseDate, Boolean editStatus, byte[] cover, String videoURL, String lyrics) {
+        this.title = title;
+        this.description = description;
+        this.views = views;
+        this.releaseDate = releaseDate;
+        this.editStatus = editStatus;
+        this.cover = cover;
+        this.videoURL = videoURL;
+        this.lyrics = lyrics;
+    }
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "id=" + id +
+                ", name='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", views=" + views +
+                ", releaseDate=" + releaseDate +
+                ", editStatus=" + editStatus +
+                ", cover=" + Arrays.toString(cover) +
+                ", videoURL='" + videoURL + '\'' +
+                ", lyrics='" + lyrics + '\'' +
+                '}';
+    }
 }
